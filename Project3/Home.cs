@@ -18,6 +18,7 @@ namespace Project3
         Random r = new Random();
         int indexx = 1;
         int lives = 3;
+        int tiles = 5;
         public Home()
         {
             InitializeComponent();
@@ -33,6 +34,7 @@ namespace Project3
         private void Home_Load(object sender, EventArgs e)
         {
             showLives();
+            showTiles();
             buttonsTable.Controls.Clear();
             for (int row = 0; row < 5; row++)
             {
@@ -41,8 +43,8 @@ namespace Project3
                     Button button = new Button();
 
                     button.Name = $"btn_{row}_{column}";
-                    button.Width = 85;
-                    button.Height = 85;
+                    button.Width = 82;
+                    button.Height = 82;
                     button.BackColor = Color.CornflowerBlue;
                     button.Enabled = false;
 
@@ -71,7 +73,9 @@ namespace Project3
         {
             indexx= 1;
             lives= 3;
+            tiles = 5;
             showLives();
+            showTiles();
             buttonsTable.Controls.Clear();
 
             Random random = new Random();
@@ -91,9 +95,13 @@ namespace Project3
             {
                 randomIndices.Add(random.Next(25));
             }
-
+            Timer tm = new Timer();
+            tm.Interval = 2000;
+            tm.Start();
             //generate buttons with random numbers in random places
             int index = 0;
+            int indexh = 0;
+            int indexc = 0;
             for (int row = 0; row < 5; row++)
             {
                 for (int column = 0; column < 5; column++)
@@ -101,27 +109,39 @@ namespace Project3
                     Button button = new Button();
 
                     button.Name = $"btn_{row}_{column}";
-                    button.Width = 85;
-                    button.Height = 85;
+                    button.Width = 82;
+                    button.Height = 82;
                     button.BackColor = Color.CornflowerBlue;
                     
                     button.Click += Button_Click;
 
                     if (randomIndices.Contains(row * 5 + column))
                     {
-                        button.Text = numbers[index].ToString(); // Assign the random number to the button
-                        button.Font = new Font("French Script MT", 18);
 
-                        index++;
+                        if (tm.Enabled)
+                        {
+                            button.Text = numbers[index].ToString(); // Assign the random number to the button
+                            button.Font = new Font("French Script MT", 18);
+
+                            index++;
+                        }
+                       
+                        tm.Tick += delegate (object s, EventArgs w)
+                        {
+                            button.ForeColor = button.BackColor;
+                            tm.Stop();
+                            
+                        };
+                        
+
                     }
                     else
                     {
-
                     }
-
                     buttonsTable.Controls.Add(button);
                 }
             }
+            
         }
 
 
@@ -147,11 +167,20 @@ namespace Project3
             }
             else 
             {
-               livesS.Text=lives.ToString();
+               livesLeft.Text=lives.ToString();
 
             }
         }
-
+        private void showTiles() {
+            if (tiles < 0)
+            {
+                tiles = 0;
+            }
+            else
+            {
+                tilesLeft.Text=tiles.ToString();
+            }
+        }
 
 
         private void Button_Click(object sender, EventArgs e)
@@ -173,12 +202,16 @@ namespace Project3
                 {
                     button.BackColor = Color.Green;
                     button.Enabled= false;
+                    tiles-= 1;
+                    showTiles();
                     MessageBox.Show("You have solved this problem","Puzzle Solved",MessageBoxButtons.OK,MessageBoxIcon.Information);
                 }
                 else if (int.Parse(button.Text) == indexx && indexx < 6)
                 {
                     button.BackColor = Color.Green;
                     button.Enabled = false;
+                    tiles -= 1;
+                    showTiles();
                     indexx++;
                 }
                 else
