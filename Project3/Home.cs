@@ -17,6 +17,7 @@ namespace Project3
         
         Random r = new Random();
         int indexx = 1;
+        int lives = 3;
         public Home()
         {
             InitializeComponent();
@@ -28,9 +29,10 @@ namespace Project3
             m.Show();
             this.Hide();
         }
-
+       
         private void Home_Load(object sender, EventArgs e)
         {
+            showLives();
             buttonsTable.Controls.Clear();
             for (int row = 0; row < 5; row++)
             {
@@ -39,9 +41,10 @@ namespace Project3
                     Button button = new Button();
 
                     button.Name = $"btn_{row}_{column}";
-                    button.Width = 80;
-                    button.Height = 80;
-                    button.BackColor = Color.Blue;
+                    button.Width = 85;
+                    button.Height = 85;
+                    button.BackColor = Color.CornflowerBlue;
+                    button.Enabled = false;
 
 
                     //button.Text = $"{row}_{column}";
@@ -61,9 +64,14 @@ namespace Project3
 
         }
 
+
+
+        //start game button
         private void startGameButton_Click(object sender, EventArgs e)
         {
             indexx= 1;
+            lives= 3;
+            showLives();
             buttonsTable.Controls.Clear();
 
             Random random = new Random();
@@ -93,14 +101,17 @@ namespace Project3
                     Button button = new Button();
 
                     button.Name = $"btn_{row}_{column}";
-                    button.Width = 80;
-                    button.Height = 80;
-                    button.BackColor = Color.Blue;
+                    button.Width = 85;
+                    button.Height = 85;
+                    button.BackColor = Color.CornflowerBlue;
+                    
                     button.Click += Button_Click;
 
                     if (randomIndices.Contains(row * 5 + column))
                     {
                         button.Text = numbers[index].ToString(); // Assign the random number to the button
+                        button.Font = new Font("French Script MT", 18);
+
                         index++;
                     }
                     else
@@ -113,6 +124,36 @@ namespace Project3
             }
         }
 
+
+
+
+
+
+
+
+
+
+
+
+        //BUttons when clicked functions
+
+        private void showLives()
+        {
+            if (lives < 0)
+            {
+                lives = 0;
+                MessageBox.Show("You have no Lives", "Puzzle Solved", MessageBoxButtons.OK, MessageBoxIcon.Information);
+
+            }
+            else 
+            {
+               livesS.Text=lives.ToString();
+
+            }
+        }
+
+
+
         private void Button_Click(object sender, EventArgs e)
         {
            
@@ -123,10 +164,18 @@ namespace Project3
             if (button.Text == "")
             {
                 button.BackColor = Color.Red;
+                lives -= 1;
+                showLives();
             }
             else
             {
-                if (int.Parse(button.Text) == indexx && indexx<6)
+                if(indexx == 5)
+                {
+                    button.BackColor = Color.Green;
+                    button.Enabled= false;
+                    MessageBox.Show("You have solved this problem","Puzzle Solved",MessageBoxButtons.OK,MessageBoxIcon.Information);
+                }
+                else if (int.Parse(button.Text) == indexx && indexx < 6)
                 {
                     button.BackColor = Color.Green;
                     button.Enabled = false;
