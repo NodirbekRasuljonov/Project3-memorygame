@@ -19,9 +19,14 @@ namespace Project3
 
         private void startGameButton_Click(object sender, EventArgs e)
         {
-            Home h=new Home();
+            Home h=new Home(this);
             h.Show();
             this.Hide();
+        }
+
+        private void nameTextBox_TextChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }
